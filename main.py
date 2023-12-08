@@ -2,7 +2,7 @@ import os
 import shutil
 
 SYSTEMS = ["nes", "snes", "n64", "megadrive"]
-indexcontents = "<link rel=\"stylesheet\" href=\"style.css\">\n<ul>\n"
+indexcontents = "<title>EmuWeb Home</title>\n<link rel=\"stylesheet\" href=\"style.css\">\n<ul>\n"
 
 if os.path.exists("output/games"):
     shutil.rmtree("output/games")
