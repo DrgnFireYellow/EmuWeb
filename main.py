@@ -2,7 +2,7 @@ import os
 import shutil
 
 SYSTEMS = ["nes", "snes", "n64", "megadrive"]
-indexcontents = "<ul>\n"
+indexcontents = "<link rel=\"stylesheet\" href=\"style.css\">\n<ul>\n"
 
 if os.path.exists("output/games"):
     shutil.rmtree("output/games")
@@ -12,6 +12,7 @@ if os.path.exists("output/artwork"):
     shutil.rmtree("output/artwork")
 
 shutil.copytree("artwork", "output/artwork")
+shutil.copy("templates/style.css", "output/style.css")
 
 def make_player(gamefile, system, htmlname):
     with open(f"templates/{system}.html") as template:
