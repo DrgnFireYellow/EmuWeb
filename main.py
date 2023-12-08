@@ -34,7 +34,7 @@ for system in SYSTEMS:
             artworkpath = os.path.join("artwork", f"{game}.png")
             print(f"Adding {game} to index")
             if os.path.isfile(artworkpath):
-                indexcontents += f"<li><a href=\"{game}.html\"><img src=\"{artworkpath}\"></a></li>\n"
+                indexcontents += f"<li><a href=\"{game}.html\"><img src=\"{artworkpath}\"><br>{game}</a></li>\n"
                 continue
             indexcontents += f"<li><a href=\"{game}.html\">{game}</a></li>\n"
 
