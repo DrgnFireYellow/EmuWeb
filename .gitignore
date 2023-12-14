@@ -165,6 +165,7 @@ games/nes/*
 games/snes/*
 games/n64/*
 games/megadrive/*
+games/gamegear/*
 artwork/*
 !*/*/info.txt
 !*/info.txt
