@@ -1,4 +1,5 @@
 # EmuWeb
+![GitHub repo size](https://img.shields.io/github/repo-size/DrgnFireYellow/EmuWeb?style=for-the-badge)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?style=for-the-badge)](https://drgnfireyellow.github.io/EmuWeb)
 
 The Open Source Retro Emulation Frontend for the Web
