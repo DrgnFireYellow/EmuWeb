@@ -12,7 +12,7 @@ NOTE: At this time I am unable to create templates for platforms other than mega
 
 ### Setup with Docker
 
-1. Create the container with `docker run --name EmuWeb -p 8080:80 -v ~/EmuWeb/games:/EmuWeb/games -v ~/EmuWeb/artwork:/EmuWeb/artwork ghcr.io/drgnfireyellow/emuweb:latest`. This will create the container, make the page available on port 8080, map the games folder to ~/EmuWeb/games, and map the artwork folder to ~/EmuWeb/artwork.
+1. Create the container with `docker run --name EmuWeb -p 8080:80 -v ~/EmuWeb/games:/EmuWeb/games -v ~/EmuWeb/artwork:/EmuWeb/artwork ghcr.io/drgnfireyellow/emuweb:stable`. This will create the container, make the page available on port 8080, map the games folder to ~/EmuWeb/games, and map the artwork folder to ~/EmuWeb/artwork.
 2. Add your legally obtained roms to the games folder in the sub-folder for the appropriate system.
 3. (Optional) Add game artwork (such as box art) to the artwork folder in png format named as [rom name].png. For example, if I had a rom called SuperMario64.z64 I would name my artwork file SuperMario64.z64.png.
 4. Restart the container.
