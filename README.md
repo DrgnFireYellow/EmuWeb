@@ -16,8 +16,5 @@ NOTE: At this time I am unable to create templates for platforms other than mega
 The template files for everything except Flash are modified versions of files from the emulatorjs.org code editor.
 
 Flash emulation powered by Ruffle.
-=======
-## Credits
-
 
 All other systems use EmulatorJS.
