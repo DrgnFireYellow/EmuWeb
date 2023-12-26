@@ -5,6 +5,8 @@ import shutil
 
 from rich.logging import RichHandler
 
+with open("EmuWeb.log", "w") as logfile:
+    logfile.write("")
 logging.basicConfig(
     format="%(message)s",
     level=logging.INFO,
