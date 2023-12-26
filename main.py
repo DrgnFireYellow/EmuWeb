@@ -20,10 +20,14 @@ GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 indexcontents = """<body class="bg-dark fs-2">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 <title>EmuWeb Home</title>
 <link rel="stylesheet" href="style.css">
-<ul>
-<li><h1 class="text-light m-2">EmuWeb</h1></li>"""
+<h1 class="text-light m-2">EmuWeb</h1>
+<div id="gamelist">
+<i class="bi bi-search text-light ms-1"></i><input class="search ms-2 mb-2 rounded-pill border-dark" type="search" placeholder="Search...">
+<ul class="list">"""
 gamelisttable = Table(title="Games Found")
 gamelisttable.add_column("Game")
 gamelisttable.add_column("File")
@@ -70,12 +74,12 @@ for system in SYSTEMS:
             logging.info(f"Adding {game} to index")
             gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
-                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
-            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
 logging.info("Creating index.html")
-indexcontents += "</ul></body>"
+indexcontents += '</ul></div><script>var gameList = new List("gamelist", {valueNames: ["name"]});</script></body>'
 with open("output/index.html", "w") as indexfile:
     indexfile.write(indexcontents)
 print(Align.center(gamelisttable))
