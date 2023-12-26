@@ -1,5 +1,6 @@
 FROM nginx:1.25.3
 LABEL org.opencontainers.image.source="https://github.com/drgnfireyellow/emuweb"
+LABEL org.opencontainers.image.maintainer="DrgnFireYellow"
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./ /EmuWeb
