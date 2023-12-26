@@ -3,7 +3,10 @@ import os
 import re
 import shutil
 
+from rich import print
+from rich.align import Align
 from rich.logging import RichHandler
+from rich.table import Table
 
 with open("EmuWeb.log", "w") as logfile:
     logfile.write("")
@@ -21,7 +24,10 @@ indexcontents = """<body class="bg-dark fs-2">
 <link rel="stylesheet" href="style.css">
 <ul>
 <li><h1 class="text-light m-2">EmuWeb</h1></li>"""
-
+gamelisttable = Table(title="Games Found")
+gamelisttable.add_column("Game")
+gamelisttable.add_column("File")
+gamelisttable.add_column("System")
 if os.path.exists("output/games"):
     shutil.rmtree("output/games")
 
@@ -62,6 +68,7 @@ for system in SYSTEMS:
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             logging.info(f"Adding {game} to index")
+            gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
                 indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
@@ -71,3 +78,4 @@ logging.info("Creating index.html")
 indexcontents += "</ul></body>"
 with open("output/index.html", "w") as indexfile:
     indexfile.write(indexcontents)
+print(Align.center(gamelisttable))
