@@ -1,7 +1,9 @@
+import logging
 import os
 import re
 import shutil
 
+logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 indexcontents = """<body class="bg-dark fs-2">
@@ -47,17 +49,17 @@ for system in SYSTEMS:
             gamedisplayname = gamedisplayname.replace("_", " ")
             gamedisplayname = gamedisplayname.title()
             gamedisplayname += " "
-            print(f"Creating page for {game}")
+            logging.info(f"Creating page for {game}")
             make_player(gamepath, system, game)
-            print(f"Checking for artwork for {game}")
+            logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
-            print(f"Adding {game} to index")
+            logging.info(f"Adding {game} to index")
             if os.path.isfile(artworkpath):
                 indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
             indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
-print("Creating index.html")
+logging.info("Creating index.html")
 indexcontents += "</ul></body>"
 with open("output/index.html", "w") as indexfile:
     indexfile.write(indexcontents)
