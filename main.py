@@ -2,7 +2,7 @@ import os
 import shutil
 
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
-indexcontents = "<body class=\"bg-dark fs-2\"><link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN\" crossorigin=\"anonymous\">\n<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL\" crossorigin=\"anonymous\"></script>\n<title>EmuWeb Home</title>\n<link rel=\"stylesheet\" href=\"style.css\">\n<ul>\n<li><h1 class=\"text-light m-2\">EmuWeb</h1></li>"
+indexcontents = '<body class="bg-dark fs-2"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">\n<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>\n<title>EmuWeb Home</title>\n<link rel="stylesheet" href="style.css">\n<ul>\n<li><h1 class="text-light m-2">EmuWeb</h1></li>'
 
 if os.path.exists("output/games"):
     shutil.rmtree("output/games")
@@ -14,12 +14,14 @@ if os.path.exists("output/artwork"):
 shutil.copytree("artwork", "output/artwork")
 shutil.copy("templates/style.css", "output/style.css")
 
+
 def make_player(gamefile, system, htmlname):
     with open(f"templates/{system}.html") as template:
         player_content = template.read()
     player_content = player_content.replace("$GAMEFILE", gamefile)
     with open(f"output/{htmlname}.html", "w") as output:
         output.write(player_content)
+
 
 for system in SYSTEMS:
     for game in os.listdir(os.path.join("games", system)):
@@ -34,9 +36,9 @@ for system in SYSTEMS:
             artworkpath = os.path.join("artwork", f"{game}.png")
             print(f"Adding {game} to index")
             if os.path.isfile(artworkpath):
-                indexcontents += f"<li><a href=\"{game}.html\" class=\"text-light text-decoration-none\"><img src=\"{artworkpath}\"><br>{os.path.splitext(game)[0]}</a><span class=\"badge bg-primary\">{system}</span></li>\n"
+                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{os.path.splitext(game)[0]}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
-            indexcontents += f"<li><a href=\"{game}.html\" class=\"text-light text-decoration-none\">{os.path.splitext(game)[0]}</a><span class=\"badge bg-primary\">{system}</span></li>\n"
+            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none">{os.path.splitext(game)[0]}</a><span class="badge bg-primary">{system}</span></li>\n'
 
 print("Creating index.html")
 indexcontents += "</ul></body>"
