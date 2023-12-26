@@ -3,10 +3,12 @@ import os
 import re
 import shutil
 
+from rich.logging import RichHandler
+
 logging.basicConfig(
-    format="[%(levelname)s] %(message)s",
+    format="%(message)s",
     level=logging.INFO,
-    handlers=[logging.FileHandler("EmuWeb.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler("EmuWeb.log"), RichHandler()],
 )
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
