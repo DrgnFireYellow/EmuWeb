@@ -159,6 +159,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# DS_Store
+.DS_Store
+
+# mdBook docs
+docs/book
+
 # Roms, Artwork, and output
 output/*
 games/nes/*
