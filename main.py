@@ -1,7 +1,8 @@
 import os
 import shutil
-
+import re
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
+GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 indexcontents = """<body class="bg-dark fs-2">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -36,15 +37,24 @@ for system in SYSTEMS:
             continue
 
         if os.path.isfile(gamepath):
+            gamedisplayname = os.path.splitext(game)[0]
+            for regex in GAMEDISPLAYNAMEREGEXES:
+                gamedisplayname = regex.sub("", gamedisplayname)
+            gamedisplayname = gamedisplayname.replace(" - ", ";")
+            gamedisplayname = gamedisplayname.replace("-", " ")
+            gamedisplayname = gamedisplayname.replace(";", " - ")
+            gamedisplayname = gamedisplayname.replace("_", " ")
+            gamedisplayname = gamedisplayname.title()
+            gamedisplayname += " "
             print(f"Creating page for {game}")
             make_player(gamepath, system, game)
             print(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             print(f"Adding {game} to index")
             if os.path.isfile(artworkpath):
-                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{os.path.splitext(game)[0]}</a><span class="badge bg-primary">{system}</span></li>\n'
+                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
-            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none">{os.path.splitext(game)[0]}</a><span class="badge bg-primary">{system}</span></li>\n'
+            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
 print("Creating index.html")
 indexcontents += "</ul></body>"
