@@ -3,7 +3,11 @@ import os
 import re
 import shutil
 
-logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
+logging.basicConfig(
+    format="[%(levelname)s] %(message)s",
+    level=logging.INFO,
+    handlers=[logging.FileHandler("EmuWeb.log"), logging.StreamHandler()],
+)
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 indexcontents = """<body class="bg-dark fs-2">
