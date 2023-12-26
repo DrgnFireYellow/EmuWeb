@@ -1,6 +1,6 @@
 import os
-import shutil
 import re
+import shutil
 
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
