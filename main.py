@@ -1,6 +1,7 @@
 import os
 import shutil
 import re
+
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 indexcontents = """<body class="bg-dark fs-2">
