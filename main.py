@@ -55,7 +55,7 @@ def make_player(gamefile, system, htmlname):
 
 for system in SYSTEMS:
     indexcontents += (
-        f'<a href="#{system}" class="btn btn-secondary me-2">{system.upper()} </a>'
+        f'<a href="#{system}" class="btn btn-secondary me-2 mb-2">{system.upper()} </a>'
     )
 
 for system in SYSTEMS:
