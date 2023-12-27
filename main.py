@@ -52,6 +52,12 @@ def make_player(gamefile, system, htmlname):
 
 
 for system in SYSTEMS:
+    indexcontents += (
+        f'<a href="#{system}" class="btn btn-secondary me-2">{system.upper()} </a>'
+    )
+
+for system in SYSTEMS:
+    indexcontents += f'<h2 class="text-light text-decoration-underline" id="{system}">{system.upper()}</h2>'
     for game in os.listdir(os.path.join("games", system)):
         gamepath = os.path.join("games", system, game)
         if game == "info.txt":
