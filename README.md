@@ -11,10 +11,13 @@ NOTE: At this time I am unable to create templates for platforms other than mega
 ## Requirements
 
 - Python 3.12
+- Dependencies in requirements.txt
 
 ## Credits
 
 The template files for everything except Flash are modified versions of files from the emulatorjs.org code editor.
+
+List.js is used for searching on the library page.
 
 Flash emulation powered by Ruffle.
 
