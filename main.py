@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import shutil
+from string import punctuation
 
 from rich import print
 from rich.align import Align
@@ -73,6 +74,8 @@ for system in SYSTEMS:
             gamedisplayname = gamedisplayname.replace("-", " ")
             gamedisplayname = gamedisplayname.replace(";", " - ")
             gamedisplayname = gamedisplayname.replace("_", " ")
+            for symbol in punctuation:
+                gamedisplayname = gamedisplayname.replace(symbol, "")
             gamedisplayname = gamedisplayname.title()
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
