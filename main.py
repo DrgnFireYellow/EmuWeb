@@ -4,6 +4,9 @@ import re
 import shutil
 from string import punctuation
 
+import questionary
+import requests
+from bs4 import BeautifulSoup
 from rich import print
 from rich.align import Align
 from rich.logging import RichHandler
@@ -18,6 +21,14 @@ logging.basicConfig(
 )
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
+ARTWORKURLS = {
+    "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",
+    "snes": "http://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/",
+    "n64": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/",
+    "megadrive": "http://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/",
+    "gamegear": "http://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/",
+}
+artworksoups = {}
 indexcontents = """<body class="bg-dark fs-2">
 <link rel="icon" href="/favicon.png">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -30,6 +41,21 @@ indexcontents = """<body class="bg-dark fs-2">
 <div id="gamelist">
 <i class="bi bi-search text-light ms-1"></i><input class="search ms-2 mb-2 rounded-pill border-dark" type="search" placeholder="Search...">
 <ul class="list">"""
+downloadartwork = questionary.confirm(
+    "Would you like to attempt to automatically download artwork?"
+).ask()
+if downloadartwork:
+    for system in SYSTEMS:
+        if system in ARTWORKURLS:
+            try:
+                artworksoups[system] = BeautifulSoup(
+                    requests.get(ARTWORKURLS[system], timeout=60).content, "html.parser"
+                )
+            except requests.Timeout:
+                logging.critical(
+                    "Unable to download artwork manifests, disabling artwork downloader."
+                )
+                downloadartwork = False
 gamelisttable = Table(title="Games Found")
 gamelisttable.add_column("Game")
 gamelisttable.add_column("File")
@@ -41,7 +67,6 @@ shutil.copytree("games", "output/games")
 if os.path.exists("output/artwork"):
     shutil.rmtree("output/artwork")
 
-shutil.copytree("artwork", "output/artwork")
 shutil.copy("templates/style.css", "output/style.css")
 shutil.copy("templates/favicon.png", "output/favicon.png")
 
@@ -70,9 +95,8 @@ for system in SYSTEMS:
             gamedisplayname = os.path.splitext(game)[0]
             for regex in GAMEDISPLAYNAMEREGEXES:
                 gamedisplayname = regex.sub("", gamedisplayname)
-            gamedisplayname = gamedisplayname.replace(" - ", ";")
+            gamedisplayname = gamedisplayname.replace(" - ", " ")
             gamedisplayname = gamedisplayname.replace("-", " ")
-            gamedisplayname = gamedisplayname.replace(";", " - ")
             gamedisplayname = gamedisplayname.replace("_", " ")
             for symbol in punctuation:
                 gamedisplayname = gamedisplayname.replace(symbol, "")
@@ -80,6 +104,23 @@ for system in SYSTEMS:
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
             make_player(gamepath, system, game)
+            if downloadartwork:
+                if system in artworksoups:
+                    try:
+                        logging.info(f"Downloading artwork for {game}")
+                        artworkurl = (
+                            artworksoups[system]
+                            .find(string=re.compile(rf"{gamedisplayname}"))
+                            .parent["href"]
+                        )
+                        with open(f"artwork/{game}.png", "wb") as artworkfile:
+                            artworkfile.write(
+                                requests.get(
+                                    ARTWORKURLS[system] + artworkurl, timeout=60
+                                ).content
+                            )
+                    except (TypeError, AttributeError, requests.Timeout):
+                        logging.error(f"Unable to download artwork for {game}")
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             logging.info(f"Adding {game} to index")
@@ -89,6 +130,7 @@ for system in SYSTEMS:
                 continue
             indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
+shutil.copytree("artwork", "output/artwork")
 logging.info("Creating index.html")
 indexcontents += '</ul></div><script>var gameList = new List("gamelist", {valueNames: ["name"]});</script></body>'
 with open("output/index.html", "w") as indexfile:
