@@ -104,25 +104,26 @@ for system in SYSTEMS:
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
             make_player(gamepath, system, game)
-            if downloadartwork:
-                if system in artworksoups:
-                    try:
-                        logging.info(f"Downloading artwork for {game}")
-                        artworkurl = (
-                            artworksoups[system]
-                            .find(string=re.compile(rf"{gamedisplayname}"))
-                            .parent["href"]
-                        )
-                        with open(f"artwork/{game}.png", "wb") as artworkfile:
-                            artworkfile.write(
-                                requests.get(
-                                    ARTWORKURLS[system] + artworkurl, timeout=60
-                                ).content
-                            )
-                    except (TypeError, AttributeError, requests.Timeout):
-                        logging.error(f"Unable to download artwork for {game}")
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
+            if downloadartwork:
+                if system in artworksoups:
+                    if not os.path.exists(artworkpath):
+                        try:
+                            logging.info(f"Downloading artwork for {game}")
+                            artworkurl = (
+                                artworksoups[system]
+                                .find(string=re.compile(rf"{gamedisplayname}"))
+                                .parent["href"]
+                            )
+                            with open(f"artwork/{game}.png", "wb") as artworkfile:
+                                artworkfile.write(
+                                    requests.get(
+                                        ARTWORKURLS[system] + artworkurl, timeout=60
+                                    ).content
+                                )
+                        except (TypeError, AttributeError, requests.Timeout):
+                            logging.error(f"Unable to download artwork for {game}")
             logging.info(f"Adding {game} to index")
             gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
