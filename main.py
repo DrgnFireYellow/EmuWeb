@@ -19,7 +19,7 @@ logging.basicConfig(
     level=logging.INFO,
     handlers=[logging.FileHandler("EmuWeb.log"), RichHandler()],
 )
-SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash"]
+SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash", "scratch"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 ARTWORKURLS = {
     "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",
@@ -103,7 +103,11 @@ for system in SYSTEMS:
             gamedisplayname = gamedisplayname.title()
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
-            make_player(gamepath, system, game)
+            if system == "scratch":
+                with open(os.path.join("games", system, game)) as gamefile:
+                    make_player(gamefile.read(), system, game)
+            else:
+                make_player(gamepath, system, game)
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             if downloadartwork:

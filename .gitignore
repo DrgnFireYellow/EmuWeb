@@ -173,6 +173,7 @@ games/n64/*
 games/megadrive/*
 games/gamegear/*
 games/flash/*
+games/scratch/*
 artwork/*
 !*/*/info.txt
 !*/info.txt
