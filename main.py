@@ -71,10 +71,11 @@ shutil.copy("templates/style.css", "output/style.css")
 shutil.copy("templates/favicon.png", "output/favicon.png")
 
 
-def make_player(gamefile, system, htmlname):
+def make_player(gamefile, system, htmlname, gamename):
     with open(f"templates/{system}.html") as template:
         player_content = template.read()
     player_content = player_content.replace("$GAMEFILE", gamefile)
+    player_content = player_content.replace("$GAMENAME", gamename)
     with open(f"output/{htmlname}.html", "w") as output:
         output.write(player_content)
 
@@ -105,9 +106,16 @@ for system in SYSTEMS:
             logging.info(f"Creating page for {game}")
             if system == "scratch":
                 with open(os.path.join("games", system, game)) as gamefile:
-                    make_player(gamefile.read(), system, game)
+                    make_player(
+                        gamefile.read(),
+                        system,
+                        os.path.splitext(game)[0],
+                        gamedisplayname,
+                    )
             else:
-                make_player(gamepath, system, game)
+                make_player(
+                    gamepath, system, os.path.splitext(game)[0], gamedisplayname
+                )
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             if downloadartwork:
@@ -131,9 +139,9 @@ for system in SYSTEMS:
             logging.info(f"Adding {game} to index")
             gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
-                indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+                indexcontents += f'<li><a href="{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
-            indexcontents += f'<li><a href="{game}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+            indexcontents += f'<li><a href="{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
 shutil.copytree("artwork", "output/artwork")
 logging.info("Creating index.html")
