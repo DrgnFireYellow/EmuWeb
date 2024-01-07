@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import re
@@ -119,21 +120,38 @@ for system in SYSTEMS:
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", f"{game}.png")
             if downloadartwork:
-                if system in artworksoups:
+                if system in artworksoups or system == "scratch":
                     if not os.path.exists(artworkpath):
                         try:
                             logging.info(f"Downloading artwork for {game}")
-                            artworkurl = (
-                                artworksoups[system]
-                                .find(string=re.compile(rf"{gamedisplayname}"))
-                                .parent["href"]
-                            )
-                            with open(f"artwork/{game}.png", "wb") as artworkfile:
-                                artworkfile.write(
-                                    requests.get(
-                                        ARTWORKURLS[system] + artworkurl, timeout=60
+                            if system == "scratch":
+                                with open(
+                                    os.path.join("games", system, game)
+                                ) as gamefile:
+                                    projectjson = requests.get(
+                                        f"https://api.scratch.mit.edu/projects/{gamefile.read()}",
+                                        timeout=60,
                                     ).content
+                                    projectdata = json.loads(projectjson)
+                                    artworkurl = projectdata["image"]
+                                    with open(
+                                        f"artwork/{game}.png", "wb"
+                                    ) as artworkfile:
+                                        artworkfile.write(
+                                            requests.get(artworkurl, timeout=60).content
+                                        )
+                            else:
+                                artworkurl = (
+                                    artworksoups[system]
+                                    .find(string=re.compile(rf"{gamedisplayname}"))
+                                    .parent["href"]
                                 )
+                                with open(f"artwork/{game}.png", "wb") as artworkfile:
+                                    artworkfile.write(
+                                        requests.get(
+                                            ARTWORKURLS[system] + artworkurl, timeout=60
+                                        ).content
+                                    )
                         except (TypeError, AttributeError, requests.Timeout):
                             logging.error(f"Unable to download artwork for {game}")
             logging.info(f"Adding {game} to index")
