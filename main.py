@@ -52,11 +52,12 @@ if downloadartwork:
                 artworksoups[system] = BeautifulSoup(
                     requests.get(ARTWORKURLS[system], timeout=60).content, "html.parser"
                 )
-            except requests.Timeout:
+            except (requests.Timeout, requests.ConnectionError):
                 logging.warn(
                     "Unable to download artwork manifests, disabling artwork downloader."
                 )
                 downloadartwork = False
+                break
 gamelisttable = Table(title="Games Found")
 gamelisttable.add_column("Game")
 gamelisttable.add_column("File")
