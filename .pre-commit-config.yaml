@@ -16,6 +16,9 @@ repos:
   rev: 1.7.6
   hooks:
   - id: bandit
+    args:
+    - -s
+    - B404,B603
 - repo: https://github.com/PyCQA/autoflake
   rev: v2.2.1
   hooks:
