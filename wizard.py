@@ -36,9 +36,13 @@ while True:
         gamespath = os.path.join(os.getcwd(), "games")
         os.chdir(os.path.expanduser("~"))
         file = questionary.path("Please select a file to copy:").ask()
+        if file == None:
+            continue
         system = questionary.select(
             "Please select the system that the game is for:", SYSTEMS
         ).ask()
+        if system == None:
+            continue
         print("[bold lime]Copying file...[/]")
         shutil.copy(file, os.path.join(gamespath, system))
 
@@ -46,6 +50,8 @@ while True:
         projectid = questionary.text(
             "Please enter the scratch project id:", validate=projectidvalidator
         ).ask()
+        if projectid == None:
+            continue
         print("Fetching project name...")
         projectdata = json.loads(
             requests.get(
@@ -64,6 +70,8 @@ while True:
         gamepath = questionary.path(
             "Please enter the path of the game to remove (press tab):"
         ).ask()
+        if gamepath == None:
+            continue
         if "info.txt" not in gamepath:
             if os.path.isdir(gamepath):
                 print("[bold red]Please do not select a directory.[/]")
