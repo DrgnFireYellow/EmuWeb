@@ -12,6 +12,7 @@ from rich import print
 from rich.align import Align
 from rich.logging import RichHandler
 from rich.table import Table
+from yaml import Loader, load
 
 with open("EmuWeb.log", "w") as logfile:
     logfile.write("")
@@ -20,7 +21,9 @@ logging.basicConfig(
     level=logging.INFO,
     handlers=[logging.FileHandler("EmuWeb.log"), RichHandler()],
 )
-SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash", "scratch"]
+with open("config.yml") as configfile:
+    config = load(configfile, Loader=Loader)
+SYSTEMS = config["enabled-systems"]
 GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
 ARTWORKURLS = {
     "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",

@@ -7,8 +7,11 @@ from subprocess import run
 import questionary
 import requests
 from rich import print
+from yaml import Dumper, Loader, dump, load
 
 SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash", "scratch"]
+with open("config.yml") as configfile:
+    config = load(configfile.read(), Loader=Loader)
 
 
 def projectidvalidator(projectid):
@@ -27,6 +30,7 @@ while True:
             "Copy a game file",
             "Add a Scratch Game",
             "Remove a Game",
+            "Enable/Disable Systems",
             "Regenerate Output",
             "Quit",
         ],
@@ -91,6 +95,13 @@ while True:
                     print("[bold red]Cancelling...[/]")
         else:
             print("[bold red]info.txt is not a game[/]")
+    elif action == "Enable/Disable Systems":
+        enabledsystems = questionary.checkbox(
+            "Please select the systems to enable:", SYSTEMS
+        ).ask()
+        config["enabled-systems"] = enabledsystems
+        with open("config.yml", "w") as configfile:
+            dump(config, configfile, Dumper=Dumper)
     elif action == "Regenerate Output":
         run([sys.executable, "main.py"])
     elif action == "Quit":

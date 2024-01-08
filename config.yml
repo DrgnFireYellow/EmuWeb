@@ -1,0 +1,8 @@
+enabled-systems:
+- nes
+- snes
+- n64
+- megadrive
+- gamegear
+- flash
+- scratch
