@@ -41,7 +41,7 @@ indexcontents = """<body class="bg-dark fs-2">
 <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 <title>EmuWeb Home</title>
 <link rel="stylesheet" href="style.css">
-<h1 class="text-light m-2">EmuWeb</h1>
+<h1 class="text-light m-2"><img src="favicon.png" class="img-fluid" style="width: 10%;">EmuWeb</h1>
 <div id="gamelist">
 <i class="bi bi-search text-light ms-1"></i><input class="search ms-2 mb-2 rounded-pill border-dark" type="search" placeholder="Search...">
 <ul class="list">"""
