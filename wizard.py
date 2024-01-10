@@ -62,7 +62,7 @@ while True:
                 "https://api.scratch.mit.edu/projects/" + projectid, timeout=60
             ).content
         )
-        projecttitle = projectdata["title"]
+        projecttitle = projectdata["title"].replace("/", "|")
         print("Adding project " + projecttitle + "...")
         with open(
             os.path.join("games", "scratch", f"{projecttitle}.txt"), "w"
