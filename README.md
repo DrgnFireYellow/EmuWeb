@@ -21,4 +21,6 @@ List.js is used for searching on the library page.
 
 Flash emulation powered by Ruffle.
 
+Scratch emulation through TurboWarp.
+
 All other systems use EmulatorJS.
