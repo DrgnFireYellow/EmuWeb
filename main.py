@@ -157,7 +157,7 @@ for system in SYSTEMS:
                                         ).content
                                     )
                         except (TypeError, AttributeError, requests.Timeout):
-                            logging.error(f"Unable to download artwork for {game}")
+                            logging.warning(f"Unable to download artwork for {game}")
             logging.info(f"Adding {game} to index")
             gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
