@@ -57,7 +57,7 @@ if downloadartwork:
                     requests.get(ARTWORKURLS[system], timeout=60).content, "html.parser"
                 )
             except (requests.Timeout, requests.ConnectionError):
-                logging.warn(
+                logging.warning(
                     "Unable to download artwork manifests, disabling artwork downloader."
                 )
                 downloadartwork = False
