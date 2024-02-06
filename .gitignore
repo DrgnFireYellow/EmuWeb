@@ -178,6 +178,13 @@ games/megadrive/*
 games/gamegear/*
 games/flash/*
 games/scratch/*
-artwork/*
+artwork/nes/*
+artwork/snes/*
+artwork/n64/*
+artwork/nds/*
+artwork/megadrive/*
+artwork/gamegear/*
+artwork/flash/*
+artwork/scratch/*
 !*/*/info.txt
 !*/info.txt

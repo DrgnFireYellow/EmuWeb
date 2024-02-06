@@ -1,0 +1,1 @@
+Place game artwork for nds games here. Files should be named with the format <rom name>.png

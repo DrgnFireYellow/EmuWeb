@@ -123,7 +123,7 @@ for system in SYSTEMS:
                     gamepath, system, os.path.splitext(game)[0], gamedisplayname
                 )
             logging.info(f"Checking for artwork for {game}")
-            artworkpath = os.path.join("artwork", f"{game}.png")
+            artworkpath = os.path.join("artwork", system, f"{game}.png")
             if downloadartwork:
                 if system in artworksoups or system == "scratch":
                     if not os.path.exists(artworkpath):
@@ -140,7 +140,7 @@ for system in SYSTEMS:
                                     projectdata = json.loads(projectjson)
                                     artworkurl = projectdata["image"]
                                     with open(
-                                        f"artwork/{game}.png", "wb"
+                                        f"artwork/scratch/{game}.png", "wb"
                                     ) as artworkfile:
                                         artworkfile.write(
                                             requests.get(artworkurl, timeout=60).content
@@ -151,7 +151,9 @@ for system in SYSTEMS:
                                     .find(string=re.compile(rf"{gamedisplayname}"))
                                     .parent["href"]
                                 )
-                                with open(f"artwork/{game}.png", "wb") as artworkfile:
+                                with open(
+                                    f"artwork/{system}/{game}.png", "wb"
+                                ) as artworkfile:
                                     artworkfile.write(
                                         requests.get(
                                             ARTWORKURLS[system] + artworkurl, timeout=60
