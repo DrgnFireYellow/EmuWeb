@@ -159,6 +159,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Visual Studio Code
+.vscode
+
 # DS_Store
 .DS_Store
 
@@ -170,6 +173,7 @@ output/*
 games/nes/*
 games/snes/*
 games/n64/*
+games/nds/*
 games/megadrive/*
 games/gamegear/*
 games/flash/*

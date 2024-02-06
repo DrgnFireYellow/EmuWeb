@@ -29,6 +29,7 @@ ARTWORKURLS = {
     "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",
     "snes": "http://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/",
     "n64": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/",
+    "nds": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/",
     "megadrive": "http://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/",
     "gamegear": "http://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/",
 }

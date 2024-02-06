@@ -2,6 +2,7 @@ enabled-systems:
 - nes
 - snes
 - n64
+- nds
 - megadrive
 - gamegear
 - flash

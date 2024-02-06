@@ -9,7 +9,7 @@ import requests
 from rich import print
 from yaml import Dumper, Loader, dump, load
 
-SYSTEMS = ["nes", "snes", "n64", "megadrive", "gamegear", "flash", "scratch"]
+SYSTEMS = ["nes", "snes", "n64", "nds", "megadrive", "gamegear", "flash", "scratch"]
 with open("config.yml") as configfile:
     config = load(configfile.read(), Loader=Loader)
 
