@@ -120,7 +120,10 @@ for system in SYSTEMS:
                     )
             else:
                 make_player(
-                    gamepath, system, os.path.splitext(game)[0], gamedisplayname
+                    f"games/{system}/{game}",
+                    system,
+                    os.path.splitext(game)[0],
+                    gamedisplayname,
                 )
             logging.info(f"Checking for artwork for {game}")
             artworkpath = os.path.join("artwork", system, f"{game}.png")
