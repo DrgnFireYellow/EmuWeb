@@ -1,5 +1,7 @@
 name: Deploy to GitHub Pages
-
+defaults:
+  run:
+    working-directory: 'site'
 on:
   push:
     branches:
@@ -14,8 +16,6 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    env:
-      working-directory: site
     steps:
       - uses: actions/checkout@v4
         with:
