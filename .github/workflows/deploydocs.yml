@@ -14,6 +14,8 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    env:
+      working-directory: site
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,9 +26,9 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-        run: yarn --cwd ./site install --frozen-lockfile
+        run: yarn install --frozen-lockfile
       - name: Build website
-        run: yarn --cwd ./site build
+        run: yarn ./site build
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
