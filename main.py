@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 import os
@@ -14,6 +15,16 @@ from rich.logging import RichHandler
 from rich.table import Table
 from yaml import Loader, load
 
+argumentparser = argparse.ArgumentParser(
+    prog="EmuWeb",
+    description="Script to generate EmuWeb output from game and artwork files.",
+)
+argumentparser.add_argument(
+    "--download_artwork",
+    action="store_true",
+    help="attempt to automatically download game artwork (slow)",
+)
+args = argumentparser.parse_args()
 with open("EmuWeb.log", "w") as logfile:
     logfile.write("")
 logging.basicConfig(
@@ -46,9 +57,7 @@ indexcontents = """<body class="bg-dark fs-2">
 <div id="gamelist">
 <i class="bi bi-search text-light ms-1"></i><input class="search ms-2 mb-2 rounded-pill border-dark" type="search" placeholder="Search...">
 <ul class="list">"""
-downloadartwork = questionary.confirm(
-    "Would you like to attempt to automatically download artwork?"
-).ask()
+downloadartwork = args.download_artwork
 if downloadartwork:
     for system in SYSTEMS:
         if system in ARTWORKURLS:

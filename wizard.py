@@ -103,6 +103,11 @@ while True:
         with open("config.yml", "w") as configfile:
             dump(config, configfile, Dumper=Dumper)
     elif action == "Regenerate Output":
-        run([sys.executable, "main.py"])
+        if questionary.confirm(
+            "Would you like to attempt to automatically download artwork?"
+        ).ask():
+            run([sys.executable, "main.py", "--download_artwork"])
+        else:
+            run([sys.executable, "main.py"])
     elif action == "Quit":
         quit()
