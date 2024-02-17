@@ -1,7 +1,4 @@
 name: Deploy to GitHub Pages
-defaults:
-  run:
-    working-directory: 'site'
 on:
   push:
     branches:
@@ -24,6 +21,7 @@ jobs:
         with:
           node-version: 18
           cache: yarn
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
