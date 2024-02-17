@@ -168,6 +168,10 @@ cython_debug/
 # mdBook docs
 docs/book
 
+# Docusaurus
+site/node_modules
+site/.docusaurus
+
 # Roms, Artwork, and output
 output/*
 games/nes/*
