@@ -180,6 +180,7 @@ games/n64/*
 games/nds/*
 games/megadrive/*
 games/gamegear/*
+games/html5/*
 games/flash/*
 games/scratch/*
 artwork/nes/*
@@ -188,6 +189,7 @@ artwork/n64/*
 artwork/nds/*
 artwork/megadrive/*
 artwork/gamegear/*
+artwork/html5/*
 artwork/flash/*
 artwork/scratch/*
 !*/*/info.txt

@@ -119,7 +119,7 @@ for system in SYSTEMS:
             gamedisplayname = gamedisplayname.title()
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
-            if system == "scratch":
+            if system == "scratch" or system == "html5":
                 with open(os.path.join("games", system, game)) as gamefile:
                     make_player(
                         gamefile.read(),
