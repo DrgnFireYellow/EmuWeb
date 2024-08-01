@@ -104,7 +104,7 @@ for system in SYSTEMS:
     indexcontents += f'<h2 class="text-light text-decoration-underline" id="{system}">{system.upper()}</h2>'
     for game in os.listdir(os.path.join("games", system)):
         gamepath = os.path.join("games", system, game)
-        if game == "info.txt":
+        if game == "info.txt" or game == ".DS_Store":
             continue
 
         if os.path.isfile(gamepath):
