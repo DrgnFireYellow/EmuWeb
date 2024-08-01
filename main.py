@@ -91,7 +91,8 @@ def make_player(gamefile, system, htmlname, gamename):
         player_content = template.read()
     player_content = player_content.replace("$GAMEFILE", gamefile)
     player_content = player_content.replace("$GAMENAME", gamename)
-    with open(f"output/{htmlname}.html", "w") as output:
+    os.makedirs(f"output/{system}", exist_ok=True)
+    with open(f"output/{system}/{htmlname}.html", "w") as output:
         output.write(player_content)
 
 
@@ -129,7 +130,7 @@ for system in SYSTEMS:
                     )
             else:
                 make_player(
-                    f"games/{system}/{game}",
+                    f"/games/{system}/{game}",
                     system,
                     os.path.splitext(game)[0],
                     gamedisplayname,
@@ -176,9 +177,9 @@ for system in SYSTEMS:
             logging.info(f"Adding {game} to index")
             gamelisttable.add_row(gamedisplayname, game, system)
             if os.path.isfile(artworkpath):
-                indexcontents += f'<li><a href="{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+                indexcontents += f'<li><a href="{system}/{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
                 continue
-            indexcontents += f'<li><a href="{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+            indexcontents += f'<li><a href="{system}/{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
 
 shutil.copytree("artwork", "output/artwork")
 logging.info("Creating index.html")
