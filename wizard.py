@@ -13,6 +13,7 @@ SYSTEMS = [
     "nes",
     "snes",
     "n64",
+    "gba",
     "nds",
     "megadrive",
     "gamegear",

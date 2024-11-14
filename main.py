@@ -4,15 +4,15 @@ import logging
 import os
 import re
 import shutil
-from string import punctuation
+import string
 
-import questionary
 import requests
 from bs4 import BeautifulSoup
 from rich import print
 from rich.align import Align
 from rich.logging import RichHandler
 from rich.table import Table
+from titlecase import titlecase
 from yaml import Loader, load
 
 argumentparser = argparse.ArgumentParser(
@@ -40,10 +40,14 @@ ARTWORKURLS = {
     "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",
     "snes": "http://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/",
     "n64": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/",
+    "gba": "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Advance/Named_Boxarts/",
     "nds": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/",
     "megadrive": "http://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/",
     "gamegear": "http://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/",
 }
+
+WHITELISTED_SYMBOLS = [".", "'", "-", ":"]
+
 artworksoups = {}
 indexcontents = """<body class="bg-dark fs-2">
 <link rel="icon" href="/favicon.png">
@@ -113,11 +117,13 @@ for system in SYSTEMS:
             for regex in GAMEDISPLAYNAMEREGEXES:
                 gamedisplayname = regex.sub("", gamedisplayname)
             gamedisplayname = gamedisplayname.replace(" - ", " ")
-            gamedisplayname = gamedisplayname.replace("-", " ")
             gamedisplayname = gamedisplayname.replace("_", " ")
-            for symbol in punctuation:
-                gamedisplayname = gamedisplayname.replace(symbol, "")
-            gamedisplayname = gamedisplayname.title()
+            for symbol in string.punctuation:
+                if symbol not in WHITELISTED_SYMBOLS:
+                    gamedisplayname = gamedisplayname.replace(symbol, "")
+
+            gamedisplayname = titlecase(gamedisplayname)
+
             gamedisplayname += " "
             logging.info(f"Creating page for {game}")
             if system == "scratch" or system == "html5":

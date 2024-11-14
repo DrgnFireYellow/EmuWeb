@@ -3,3 +3,5 @@ pyyaml
 questionary
 requests
 rich
+titlecase
+

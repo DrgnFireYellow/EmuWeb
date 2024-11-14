@@ -178,6 +178,7 @@ games/nes/*
 games/snes/*
 games/n64/*
 games/nds/*
+games/gba/*
 games/megadrive/*
 games/gamegear/*
 games/html5/*
@@ -186,6 +187,7 @@ games/scratch/*
 artwork/nes/*
 artwork/snes/*
 artwork/n64/*
+artwork/gba/*
 artwork/nds/*
 artwork/megadrive/*
 artwork/gamegear/*
