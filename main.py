@@ -67,7 +67,10 @@ def upload(console):
 def play(console, game):
     player = PLAYERS[console]
     return render_template(
-        "players/" + player["template"], console=console, game=game, core=player["core"]
+        "players/" + player["template"],
+        console=console,
+        game=game,
+        core=player["core"],
     )
 
 
