@@ -1,0 +1,44 @@
+{% include "base.html" %}
+
+{% block content %}
+<div class="tabs tabs-bordered">
+    {% for console in consoles %}
+        <a class="tab text-black" href="#console-{{ console }}">{{ console }}</a>
+    {% endfor %}
+</div>
+
+{% for console in consoles %}
+    <div id="console-{{ console }}" class="hidden target:block">
+        <div class="flex justify-between">
+            <h2 class="text-3xl text-left p-2">{{ console }}</h2>
+            <ul class="menu bg-slate-100 rounded-box text-md m-2">
+                <a href="upload/{{ console }}"><span class="bi bi-upload"></span> Upload Game</a>
+                <a onclick="alert('Scraping started. The page will reload when scraping is complete.');window.location.replace('/api/scrape/{{ console }}');">
+                    <span class="bi bi-brush"></span> Scrape Games
+                </a>
+            </ul>
+        </div>
+        <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+            {% for game in games[console] %}
+                <a class="text-xl animate__animated animate__bounceIn" href="/play/{{ console }}/{{ game }}">
+                    {% if game in metadata %}
+                        <div class="flex justify-center">
+                            <img class="w-1/2 rounded hover:border-solid hover:border-4 hover:border-green-500" src="/cdn/artwork/{{ console }}/{{ metadata[game]['image'] }}">
+                        </div>
+                        {{ metadata[game]["name"] }}
+                    {% else %}
+                        {{ game }}
+                    {% endif%}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+    if (!window.location.href.includes("#console")) {
+        window.location.href = "#console-NES";
+    }
+</script>
+
+{% endblock %}

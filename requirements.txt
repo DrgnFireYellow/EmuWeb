@@ -1,7 +1,4 @@
-beautifulsoup4
-pyyaml
-questionary
+Flask
+python-dotenv
+python-steamgriddb
 requests
-rich
-titlecase
-

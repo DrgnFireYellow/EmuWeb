@@ -172,27 +172,7 @@ docs/book
 site/node_modules
 site/.docusaurus
 
-# Roms, Artwork, and output
-output/*
-games/nes/*
-games/snes/*
-games/n64/*
-games/nds/*
-games/gba/*
-games/megadrive/*
-games/gamegear/*
-games/html5/*
-games/flash/*
-games/scratch/*
-artwork/nes/*
-artwork/snes/*
-artwork/n64/*
-artwork/gba/*
-artwork/nds/*
-artwork/megadrive/*
-artwork/gamegear/*
-artwork/html5/*
-artwork/flash/*
-artwork/scratch/*
-!*/*/info.txt
-!*/info.txt
+# Roms, Artwork, and Metadata
+games
+artwork
+metadata.json

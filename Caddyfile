@@ -1,8 +1,0 @@
-https://
-
-tls internal {
-    on_demand
-}
-
-root * output
-file_server

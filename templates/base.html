@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html data-theme="light">
+    <head>
+        <title>EmuWeb</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="icon" href="/static/favicon.png">
+    </head>
+    <body class="min-h-screen bg-slate-300 text-black text-center">
+        <div class="bg-slate-200">
+            <a href="/" class="navbar-center"><h1 class="text-3xl"><img draggable="false" class="inline-block w-1/6 select-none" src="/static/favicon.png">EmuWeb</h1></a>
+        </div>
+        <div id="messages">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="alert">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        {% block content %}{% endblock %}
+    </body>
+</html>

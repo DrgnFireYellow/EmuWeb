@@ -1,195 +1,104 @@
-import argparse
 import json
-import logging
 import os
-import re
 import shutil
-import string
 
 import requests
-from bs4 import BeautifulSoup
-from rich import print
-from rich.align import Align
-from rich.logging import RichHandler
-from rich.table import Table
-from titlecase import titlecase
-from yaml import Loader, load
+from dotenv import load_dotenv
+from flask import *
+from steamgrid import SteamGridDB
 
-argumentparser = argparse.ArgumentParser(
-    prog="EmuWeb",
-    description="Script to generate EmuWeb output from game and artwork files.",
-)
-argumentparser.add_argument(
-    "--download_artwork",
-    action="store_true",
-    help="attempt to automatically download game artwork (slow)",
-)
-args = argumentparser.parse_args()
-with open("EmuWeb.log", "w") as logfile:
-    logfile.write("")
-logging.basicConfig(
-    format="%(message)s",
-    level=logging.INFO,
-    handlers=[logging.FileHandler("EmuWeb.log"), RichHandler()],
-)
-with open("config.yml") as configfile:
-    config = load(configfile, Loader=Loader)
-SYSTEMS = config["enabled-systems"]
-GAMEDISPLAYNAMEREGEXES = [re.compile(r" \(.*\)"), re.compile(r" \[.*\]")]
-ARTWORKURLS = {
-    "nes": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20Entertainment%20System/Named_Boxarts/",
-    "snes": "http://thumbnails.libretro.com/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Named_Boxarts/",
-    "n64": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%2064/Named_Boxarts/",
-    "gba": "https://thumbnails.libretro.com/Nintendo%20-%20Game%20Boy%20Advance/Named_Boxarts/",
-    "nds": "http://thumbnails.libretro.com/Nintendo%20-%20Nintendo%20DS/Named_Boxarts/",
-    "megadrive": "http://thumbnails.libretro.com/Sega%20-%20Mega%20Drive%20-%20Genesis/Named_Boxarts/",
-    "gamegear": "http://thumbnails.libretro.com/Sega%20-%20Game%20Gear/Named_Boxarts/",
+CONSOLES = ["NES", "SNES", "N64", "GBA", "DS"]
+
+PLAYERS = {
+    "NES": {"template": "ejs.html", "core": "nes"},
+    "SNES": {"template": "ejs.html", "core": "snes"},
+    "N64": {"template": "ejs.html", "core": "n64"},
+    "GBA": {"template": "ejs.html", "core": "gba"},
+    "DS": {"template": "ejs.html", "core": "nds"},
 }
 
-WHITELISTED_SYMBOLS = [".", "'", "-", ":"]
+for console in CONSOLES:
+    os.makedirs(os.path.join("games", console), exist_ok=True)
+    os.makedirs(os.path.join("artwork", console), exist_ok=True)
 
-artworksoups = {}
-indexcontents = """<body class="bg-dark fs-2">
-<link rel="icon" href="/favicon.png">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
-<title>EmuWeb Home</title>
-<link rel="stylesheet" href="style.css">
-<h1 class="text-light m-2"><img src="favicon.png" draggable="false" class="img-fluid" style="width: 10%;">EmuWeb</h1>
-<div id="gamelist">
-<i class="bi bi-search text-light ms-1"></i><input class="search ms-2 mb-2 rounded-pill border-dark" type="search" placeholder="Search...">
-<ul class="list">"""
-downloadartwork = args.download_artwork
-if downloadartwork:
-    for system in SYSTEMS:
-        if system in ARTWORKURLS:
-            try:
-                artworksoups[system] = BeautifulSoup(
-                    requests.get(ARTWORKURLS[system], timeout=60).content, "html.parser"
-                )
-            except (requests.Timeout, requests.ConnectionError):
-                logging.warning(
-                    "Unable to download artwork manifests, disabling artwork downloader."
-                )
-                downloadartwork = False
-                break
-gamelisttable = Table(title="Games Found")
-gamelisttable.add_column("Game")
-gamelisttable.add_column("File")
-gamelisttable.add_column("System")
-if os.path.exists("output/games"):
-    shutil.rmtree("output/games")
+if not os.path.exists("metadata.json"):
+    metadata = {}
 
-shutil.copytree("games", "output/games")
-if os.path.exists("output/artwork"):
-    shutil.rmtree("output/artwork")
+else:
+    with open("metadata.json") as metadatafile:
+        metadata = json.load(metadatafile)
 
-shutil.copy("templates/style.css", "output/style.css")
-shutil.copy("templates/favicon.png", "output/favicon.png")
+load_dotenv()
+
+if os.getenv("STEAMGRIDDB_API_KEY") != None:
+    scraper = SteamGridDB(os.getenv("STEAMGRIDDB_API_KEY"))
+
+app = Flask(__name__)
 
 
-def make_player(gamefile, system, htmlname, gamename):
-    with open(f"templates/{system}.html") as template:
-        player_content = template.read()
-    player_content = player_content.replace("$GAMEFILE", gamefile)
-    player_content = player_content.replace("$GAMENAME", gamename)
-    os.makedirs(f"output/{system}", exist_ok=True)
-    with open(f"output/{system}/{htmlname}.html", "w") as output:
-        output.write(player_content)
+@app.route("/")
+def index():
+    games = {}
 
+    for console in CONSOLES:
+        games[console] = os.listdir(os.path.join("games", console))
 
-for system in SYSTEMS:
-    indexcontents += (
-        f'<a href="#{system}" class="btn btn-secondary me-2 mb-2">{system.upper()} </a>'
+    return render_template(
+        "index.html", consoles=CONSOLES, games=games, metadata=metadata
     )
 
-for system in SYSTEMS:
-    indexcontents += f'<h2 class="text-light text-decoration-underline" id="{system}">{system.upper()}</h2>'
-    for game in os.listdir(os.path.join("games", system)):
-        gamepath = os.path.join("games", system, game)
-        if game == "info.txt" or game == ".DS_Store":
-            continue
 
-        if os.path.isfile(gamepath):
-            gamedisplayname = os.path.splitext(game)[0]
-            for regex in GAMEDISPLAYNAMEREGEXES:
-                gamedisplayname = regex.sub("", gamedisplayname)
-            gamedisplayname = gamedisplayname.replace(" - ", " ")
-            gamedisplayname = gamedisplayname.replace("_", " ")
-            for symbol in string.punctuation:
-                if symbol not in WHITELISTED_SYMBOLS:
-                    gamedisplayname = gamedisplayname.replace(symbol, "")
+@app.route("/upload/<console>", methods=["GET", "POST"])
+def upload(console):
+    if console not in CONSOLES:
+        return "Invalid Console", 400
+    else:
+        if request.method == "GET":
+            return render_template("upload.html")
+        elif request.method == "POST":
+            file = request.files["file"]
+            if file.filename == "":
+                return redirect(request.url)
+            file.save(os.path.join("games", console, file.filename))
+            return redirect(f"/#console-{console}")
 
-            gamedisplayname = titlecase(gamedisplayname)
 
-            gamedisplayname += " "
-            logging.info(f"Creating page for {game}")
-            if system == "scratch" or system == "html5":
-                with open(os.path.join("games", system, game)) as gamefile:
-                    make_player(
-                        gamefile.read(),
-                        system,
-                        os.path.splitext(game)[0],
-                        gamedisplayname,
-                    )
-            else:
-                make_player(
-                    f"/games/{system}/{game}",
-                    system,
-                    os.path.splitext(game)[0],
-                    gamedisplayname,
-                )
-            logging.info(f"Checking for artwork for {game}")
-            artworkpath = os.path.join("artwork", system, f"{game}.png")
-            if downloadartwork:
-                if system in artworksoups or system == "scratch":
-                    if not os.path.exists(artworkpath):
-                        try:
-                            logging.info(f"Downloading artwork for {game}")
-                            if system == "scratch":
-                                with open(
-                                    os.path.join("games", system, game)
-                                ) as gamefile:
-                                    projectjson = requests.get(
-                                        f"https://api.scratch.mit.edu/projects/{gamefile.read()}",
-                                        timeout=60,
-                                    ).content
-                                    projectdata = json.loads(projectjson)
-                                    artworkurl = projectdata["image"]
-                                    with open(
-                                        f"artwork/scratch/{game}.png", "wb"
-                                    ) as artworkfile:
-                                        artworkfile.write(
-                                            requests.get(artworkurl, timeout=60).content
-                                        )
-                            else:
-                                artworkurl = (
-                                    artworksoups[system]
-                                    .find(string=re.compile(rf"{gamedisplayname}"))
-                                    .parent["href"]
-                                )
-                                with open(
-                                    f"artwork/{system}/{game}.png", "wb"
-                                ) as artworkfile:
-                                    artworkfile.write(
-                                        requests.get(
-                                            ARTWORKURLS[system] + artworkurl, timeout=60
-                                        ).content
-                                    )
-                        except (TypeError, AttributeError, requests.Timeout):
-                            logging.warning(f"Unable to download artwork for {game}")
-            logging.info(f"Adding {game} to index")
-            gamelisttable.add_row(gamedisplayname, game, system)
-            if os.path.isfile(artworkpath):
-                indexcontents += f'<li><a href="{system}/{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name"><img src="{artworkpath}"><br>{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
-                continue
-            indexcontents += f'<li><a href="{system}/{os.path.splitext(game)[0]}.html" class="text-light text-decoration-none name">{gamedisplayname}</a><span class="badge bg-primary">{system}</span></li>\n'
+@app.route("/play/<console>/<game>")
+def play(console, game):
+    player = PLAYERS[console]
+    return render_template(
+        "players/" + player["template"], console=console, game=game, core=player["core"]
+    )
 
-shutil.copytree("artwork", "output/artwork")
-logging.info("Creating index.html")
-indexcontents += '</ul></div><script>var gameList = new List("gamelist", {valueNames: ["name"]});</script></body>'
-with open("output/index.html", "w") as indexfile:
-    indexfile.write(indexcontents)
-print(Align.center(gamelisttable))
+
+@app.route("/cdn/games/<path:game>")
+def games_cdn(game):
+    return send_from_directory("games", game)
+
+
+@app.route("/cdn/artwork/<path:game>")
+def artwork_cdn(game):
+    return send_from_directory("artwork", game)
+
+
+@app.route("/api/scrape/<console>")
+def scrape(console):
+    global metadata
+
+    for game in os.listdir(os.path.join("games", console)):
+        search = scraper.search_game(os.path.splitext(game)[0])
+        if len(search) > 0:
+            metadata[game] = {}
+            metadata[game]["name"] = search[0].name
+            boxart = scraper.get_grids_by_gameid([search[0].id])[0]
+            image_response = requests.get(boxart.url, stream=True)
+            image_name = game + os.path.splitext(boxart.url)[-1]
+            metadata[game]["image"] = image_name
+            with open(os.path.join("artwork", console, image_name), "wb") as boxartfile:
+                shutil.copyfileobj(image_response.raw, boxartfile)
+    with open("metadata.json", "w") as metadatafile:
+        json.dump(metadata, metadatafile)
+    return redirect(f"/#console-{console}")
+
+
+app.run()

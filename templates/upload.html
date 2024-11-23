@@ -1,0 +1,11 @@
+{% include "base.html" %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data" class="flex h-screen">
+    <div class="m-auto">
+        <input class="file-input m-2" type="file" name="file">
+        <br>
+        <input class="btn btn-success" type="submit" value="Upload">
+    </div>
+</form>
+{% endblock %}

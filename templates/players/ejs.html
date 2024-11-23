@@ -1,0 +1,20 @@
+{% include "/base.html" %}
+
+<div class="w-full h-full flex justify-center items-center">
+    <div class="w-2/3 h-1/2 max-w-full">
+        <div id="player">
+        </div>
+    </div>
+</div>
+
+<script>
+    EJS_player = "#player";
+    EJS_core = "{{ core }}";
+    EJS_color = "#4a00ff";
+    EJS_startOnLoaded = true;
+    EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+    EJS_gameUrl = "/cdn/games/{{ console }}/{{ game }}";
+</script>
+
+
+<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
