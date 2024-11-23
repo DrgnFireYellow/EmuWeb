@@ -5,19 +5,16 @@
 
 The Open Source Retro Emulation Frontend for the Web
 
-NOTE: At this time I am unable to create templates for platforms other than megadrive, gamegear, n64, nes, snes, and flash. If you would like to help add more templates, feel free to create a pull request.
-
-
 ## Requirements
 
-- Python 3.12
+- Python 3.13
 - Dependencies in requirements.txt
+- A SteamGridDB API Key
 
 ## Credits
 
 The template files for everything except Flash are modified versions of files from the emulatorjs.org code editor.
 
-List.js is used for searching on the library page.
 
 Flash emulation powered by Ruffle.
 
