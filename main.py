@@ -113,4 +113,5 @@ def delete_game(console, game):
     return redirect(f"/#console-{console}")
 
 
-app.run()
+if __name__ == "__main__":
+    app.run("0.0.0.0", 8080)
