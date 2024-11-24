@@ -1,0 +1,9 @@
+{% include "/players/player_base.html" %}
+
+{% block player %}
+<embed src="/cdn/games/{{ console }}/{{ game }}">
+{% endblock %}
+
+{% block config %}
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+{% endblock %}

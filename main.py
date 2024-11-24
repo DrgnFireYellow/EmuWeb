@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import *
 from steamgrid import SteamGridDB
 
-CONSOLES = ["NES", "SNES", "N64", "GBA", "DS"]
+CONSOLES = ["NES", "SNES", "N64", "GBA", "DS", "Flash"]
 
 PLAYERS = {
     "NES": {"template": "ejs.html", "core": "nes"},
@@ -15,6 +15,7 @@ PLAYERS = {
     "N64": {"template": "ejs.html", "core": "n64"},
     "GBA": {"template": "ejs.html", "core": "gba"},
     "DS": {"template": "ejs.html", "core": "nds"},
+    "Flash": {"template": "ruffle.html", "core": None},
 }
 
 for console in CONSOLES:
