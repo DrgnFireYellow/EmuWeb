@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 from flask import *
 from steamgrid import SteamGridDB
+from werkzeug.utils import secure_filename
 
 CONSOLES = ["NES", "SNES", "N64", "GBA", "DS", "Flash"]
 
@@ -60,7 +61,7 @@ def upload(console):
             file = request.files["file"]
             if file.filename == "":
                 return redirect(request.url)
-            file.save(os.path.join("games", console, file.filename))
+            file.save(os.path.join("games", console, secure_filename(file.filename)))
             return redirect(f"/#console-{console}")
 
 
@@ -102,6 +103,13 @@ def scrape(console):
                 shutil.copyfileobj(image_response.raw, boxartfile)
     with open("metadata.json", "w") as metadatafile:
         json.dump(metadata, metadatafile)
+    return redirect(f"/#console-{console}")
+
+
+@app.route("/api/delete_game/<console>/<game>")
+def delete_game(console, game):
+    os.remove(os.path.join("games", console, game))
+
     return redirect(f"/#console-{console}")
 
 
