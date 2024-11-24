@@ -43,7 +43,7 @@ def index():
     games = {}
 
     for console in CONSOLES:
-        games[console] = os.listdir(os.path.join("games", console))
+        games[console] = sorted(os.listdir(os.path.join("games", console)))
 
     return render_template(
         "index.html", consoles=CONSOLES, games=games, metadata=metadata
